@@ -1,0 +1,109 @@
+/*
+Kelompok 5 Pilkom A:
+Citra Ayu Rahmawati  (2205521)
+Elliora Orva Linnisa (2203451)
+Natasya Destiani     (2207217)
+*/
+
+
+#include <stdio.h>  // Menyertakan pustaka standar untuk fungsi input/output.
+#include <stdlib.h> // Menyertakan pustaka standar untuk alokasi memori dan fungsi-fungsi umum.
+
+int banding(const void *a, const void *b) {
+    return (*(int *)a - *(int *)b);
+    // Fungsi perbandingan yang akan digunakan oleh qsort untuk mengurutkan array data.
+}
+
+void Mean(int data[], int n) {
+    int sum = 0; // Variabel untuk menyimpan jumlah data.
+    int i;
+    for (i = 0; i < n; i++) {
+        sum += data[i]; // Menambahkan data ke variabel sum.
+    }
+    float mean = (float)sum / n; // Menghitung nilai rata-rata (mean) dari data.
+    printf("Mean: %.2f\n", mean); // Mencetak mean dengan 2 desimal.
+}
+
+void Median(int data[], int n) {
+    qsort(data, n, sizeof(int), banding);
+    // Mengurutkan data menggunakan fungsi qsort dengan fungsi perbandingan 'banding'.
+    float median;
+    if (n % 2 == 0) {
+        median = (data[n / 2 - 1] + data[n / 2]) / 2.0;
+        // Menghitung median jika n genap.
+    } else {
+        median = data[n / 2];
+        // Menghitung median jika n ganjil.
+    }
+    printf("Median: %.2f\n", median); // Mencetak median dengan 2 desimal.
+}
+
+void Modus(int data[], int n) {
+    qsort(data, n, sizeof(int), banding);
+    // Mengurutkan data menggunakan fungsi qsort dengan fungsi perbandingan 'banding'.
+    
+    int i;
+    int currentNum = data[0]; // Data saat ini yang sedang dihitung modusnya.
+    int currentCount = 1; // Jumlah kemunculan data saat ini.
+    int maxCount = 1; // Jumlah maksimum kemunculan data.
+    int modus = data[0]; // Data dengan jumlah kemunculan maksimum.
+
+    for (i = 1; i < n; i++) {
+        if (data[i] == currentNum) {
+            currentCount++;
+        } else {
+            if (currentCount > maxCount) {
+                maxCount = currentCount;
+                modus = currentNum;
+            }
+            currentNum = data[i];
+            currentCount = 1;
+        }
+    }
+    // Menghitung modus dari data.
+    
+    if (currentCount > maxCount) {
+        modus = currentNum;
+    }
+    // Menangani kasus di mana data terakhir adalah modus.
+
+    printf("Modus: %d\n", modus); // Mencetak modus.
+}
+
+void DesilPersentil(int data[], int n) {
+    int IndexD6 = (int)(0.6 * (n - 1)); // Menghitung indeks untuk desil 6 (D6).
+    float D6 = data[IndexD6]; // Mengambil nilai desil 6.
+    printf("Desil 6 (D6): %.2f\n", D6); // Mencetak nilai D6 dengan 2 desimal.
+
+    int indexP35 = (int)(0.35 * (n - 1)); // Menghitung indeks untuk persentil 35 (P35).
+    float P35 = data[indexP35]; // Mengambil nilai P35.
+    printf("Persentil 35 (P35): %.2f\n", P35); // Mencetak nilai P35 dengan 2 desimal.
+}
+
+int main() {
+    int n, i;
+    printf("Masukkan banyak data: "); // Meminta pengguna untuk memasukkan jumlah data.
+    scanf("%d", &n); // Membaca jumlah data dari pengguna.
+
+    int *Data = (int *)malloc(n * sizeof(int)); // Alokasi memori untuk array Data.
+
+    printf("Masukkan data:\n"); // Meminta pengguna untuk memasukkan data.
+    for (i = 0; i < n; i++) {
+        scanf("%d", &Data[i]); // Membaca data dari pengguna dan menyimpannya di array Data.
+    }
+    printf("\n");
+    qsort(Data, n, sizeof(int), banding); // Mengurutkan data sebelum melakukan perhitungan.
+
+    printf("Data setelah diurutkan:\n");
+    for (i = 0; i < n; i++) {
+        printf("%d ", Data[i]); // Mencetak data setelah diurutkan.
+    }
+    printf("\n\n");
+
+    Mean(Data, n); // Memanggil fungsi Mean.
+    Median(Data, n); // Memanggil fungsi Median.
+    Modus(Data, n); // Memanggil fungsi Modus.
+    DesilPersentil(Data, n); // Memanggil fungsi DesilPersentil.
+
+    return 0; // Keluar dari program.
+}
